@@ -553,6 +553,9 @@ CirMgr::dfsTraversal(CirGate* curGate)
         if(curGate->_faninList[i].gate()->isGlobalRef() == false && 
            curGate->_faninList[i].gate()->getType() != UNDEF_GATE)
             dfsTraversal(curGate->_faninList[i].gate());
+        else if(curGate->_faninList[i].gate()->getType()==UNDEF_GATE)
+            curGate->_faninList[i].gate()->setTracedOrNot(true);
+        else;//traced but not undef
     }
 
     _dfsList.push_back(curGate);

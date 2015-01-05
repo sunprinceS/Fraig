@@ -64,6 +64,7 @@ public:
 
    // Member functions about circuit construction
    bool readCircuit(const string&);
+
    // Member functions about circuit optimization
    void sweep();
    void optimize();
@@ -97,8 +98,8 @@ private:
     unsigned int _A;
 
     //important list
-    GateList _totalList;
-    GateList _dfsList;
+    GateList _totalList;//total gates of PI and AND
+    GateList _dfsList;//active gates
 
     //input
     IdList _PIIds;//literal id
@@ -136,6 +137,10 @@ private:
     bool genConnection();
     void dfsTraversal(CirGate* curGate);
     bool genDfsList();
+
+    //optimization related
+    bool removeFromFanin (unsigned int gid,vector<CirGateV>& fanin);
+    bool removeFromFanout(unsigned int gid,vector<CirGateV>& fanout);
 
     //tool 
     void traversalReset();
