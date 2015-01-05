@@ -40,8 +40,7 @@ CirMgr::sweep()
                     removeFromFanout(i,_totalList[i]->_fanoutList);
                     cout << "Sweeping: " << _totalList[i]->getTypeStr() 
                          << "(" <<_totalList[i]->_varId<< ") removed..." <<endl;
-                    //if(_totalList[i]->getType() == AIG_GATE)
-                    //--_A;
+
                     delete _totalList[i];
                     _totalList[i] = NULL;
                 }
@@ -59,31 +58,27 @@ CirMgr::optimize()
 /***************************************************/
 /*   Private member functions about optimization   */
 /***************************************************/
-bool
+void
 CirMgr::removeFromFanin(unsigned int gid,vector<CirGateV>& fanin)
 {
     
     if(fanin.empty())
-        return true;
+        return ;
     for (size_t i = 0;i<fanin.size();++i) {
         for (size_t j = 0;j<fanin[i].gate()->_fanoutList.size();++j) {
             if(fanin[i].gate()->_fanoutList[j].gate()->_varId == gid){
                 fanin[i].gate()-> _fanoutList.erase(fanin[i].gate()->_fanoutList.begin()+j);
                 break;
             }
-            //else{
-                //cerr << "remove Fanin has unexpected result at " << gid << endl;
-                //return false;
-            //}
         }
     }
-    return true;
+    return ;
 }
-bool
+void
 CirMgr::removeFromFanout(unsigned int gid,vector<CirGateV>& fanout)
 {
     if(fanout.empty())
-        return true;
+        return ;
     for (size_t i = 0;i<fanout.size();++i) {
         for (size_t j = 0;j<fanout[i].gate()->_faninList.size();++j) {
             if(fanout[i].gate()->_faninList[j].gate()->_varId == gid){
@@ -92,7 +87,5 @@ CirMgr::removeFromFanout(unsigned int gid,vector<CirGateV>& fanout)
             }
         }
     }
-    //cerr << "remove Fanout has unexpected result at " << gid << endl;
-    //return false;
-    return true;
+    return ;
 }

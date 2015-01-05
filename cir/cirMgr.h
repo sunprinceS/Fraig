@@ -139,8 +139,8 @@ private:
     bool genDfsList();
 
     //optimization related
-    bool removeFromFanin (unsigned int gid,vector<CirGateV>& fanin);
-    bool removeFromFanout(unsigned int gid,vector<CirGateV>& fanout);
+    void removeFromFanin (unsigned int gid,vector<CirGateV>& fanin);
+    void removeFromFanout(unsigned int gid,vector<CirGateV>& fanout);
 
     //tool 
     void traversalReset();
