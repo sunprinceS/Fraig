@@ -62,18 +62,22 @@ CirMgr::optimize()
 bool
 CirMgr::removeFromFanin(unsigned int gid,vector<CirGateV>& fanin)
 {
+    
     if(fanin.empty())
         return true;
     for (size_t i = 0;i<fanin.size();++i) {
         for (size_t j = 0;j<fanin[i].gate()->_fanoutList.size();++j) {
             if(fanin[i].gate()->_fanoutList[j].gate()->_varId == gid){
                 fanin[i].gate()-> _fanoutList.erase(fanin[i].gate()->_fanoutList.begin()+j);
-                return true;
+                break;
             }
+            //else{
+                //cerr << "remove Fanin has unexpected result at " << gid << endl;
+                //return false;
+            //}
         }
     }
-    cerr << "remove Fanin has unexpected result at " << gid << endl;
-    return false;
+    return true;
 }
 bool
 CirMgr::removeFromFanout(unsigned int gid,vector<CirGateV>& fanout)
@@ -84,10 +88,11 @@ CirMgr::removeFromFanout(unsigned int gid,vector<CirGateV>& fanout)
         for (size_t j = 0;j<fanout[i].gate()->_faninList.size();++j) {
             if(fanout[i].gate()->_faninList[j].gate()->_varId == gid){
                 fanout[i].gate()-> _faninList.erase(fanout[i].gate()->_faninList.begin()+j);
-                return true;
+                break;
             }
         }
     }
-    cerr << "remove Fanout has unexpected result at " << gid << endl;
-    return false;
+    //cerr << "remove Fanout has unexpected result at " << gid << endl;
+    //return false;
+    return true;
 }

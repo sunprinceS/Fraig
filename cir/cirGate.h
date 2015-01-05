@@ -55,9 +55,9 @@ public:
 
    // Basic access methods
    virtual string getTypeStr() const=0;
+   virtual GateType getType()  const=0; 
    unsigned getLineNo() const { return _lineNo; }
-   virtual unsigned int getIdIndex()const = 0;
-   virtual GateType getType()const = 0; 
+   virtual unsigned int getIdIndex() const=0;
 
    void setFecGrpNum(size_t num) {_fecGrpNum = num;}
    size_t getFecGrpNum()const {return _fecGrpNum;}
@@ -87,6 +87,7 @@ public:
 
    //other
    //void sortFan();
+   
 protected:
     unsigned int _varId;
     unsigned int _lineNo;
