@@ -12,7 +12,6 @@
 #include "cirGate.h"
 #include "cirMgr.h"
 #include "util.h"
-
 #include <iomanip>
 #include <sstream>
 
@@ -157,10 +156,10 @@ void CirGate::printGate() const
        cout << " (" << _symbol << ")";
 }
 
-//void CirGate::sortFan()
-//{
-    //if (!(_fanoutList.empty()))
-        //sort(_fanoutList.begin(), _fanoutList.end());
-//}
+void CirGate::sortFan()
+{
+    if (!(_fanoutList.empty()))
+        sort(_fanoutList.begin(), _fanoutList.end());
+}
 
 

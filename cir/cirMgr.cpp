@@ -184,9 +184,12 @@ CirMgr::readCircuit(const string& fileName)
         
         if(!(genConnection())) {return false;}
         
-        traversalReset();
         if(!(genDfsList())) {return false;}
-
+        
+        for (size_t i = 0;i<_totalList.size();++i) {
+            if(_totalList[i] != NULL)
+                _totalList[i]->sortFan();
+        }
         return true;
     }
     else

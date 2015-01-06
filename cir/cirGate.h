@@ -13,6 +13,7 @@
 #include <vector>
 #include <iostream>
 #include "cirDef.h"
+#include<algorithm>
 #include "sat.h"
 #include <climits>
 #include <sstream>
@@ -24,28 +25,14 @@ using namespace std;
 // TODO: Feel free to define your own classes, variables, or functions.
 
 class CirGate;
-
+class CirGateV;
 //------------------------------------------------------------------------
 //   Define classes
 //------------------------------------------------------------------------
-class CirGateV
-{
-public:
-    #define NEG 0x1
-    CirGateV(const CirGate* gate,size_t phase):
-        _gateV((size_t)gate + phase){}
-    CirGate* gate() const {return (CirGate*)(_gateV & ~size_t(NEG));}
-    bool isInv() const {return (_gateV & NEG);}
-    //bool operator < (CirGateV& rhs)
-    //{return this->gate()->_varId < rhs.gate()->_varId;}
-
-private:
-    size_t _gateV;
-};
 class CirGate
 { 
     friend CirMgr;
-    
+    friend CirGateV; 
 public:
    CirGate(unsigned int id,unsigned int l=0,bool bTraced = false):
             _varId(id),_lineNo(l),_colNo(0),_symbol(""),
@@ -86,7 +73,7 @@ public:
    void setToGlobalRef()const {_ref = _globalRef;}
 
    //other
-   //void sortFan();
+   void sortFan();
    
 protected:
     unsigned int _varId;
@@ -112,6 +99,21 @@ protected:
     void faninTraversal(CirGate*,unsigned int, unsigned int,bool)const;
 
     
+};
+
+class CirGateV
+{
+public:
+    #define NEG 0x1
+    CirGateV(const CirGate* gate,size_t phase):
+        _gateV((size_t)gate + phase){}
+    CirGate* gate() const {return (CirGate*)(_gateV & ~size_t(NEG));}
+    bool isInv() const {return (_gateV & NEG);}
+    bool operator < (const CirGateV& rhs) const
+    {return this->gate()->_varId < rhs.gate()->_varId;}
+
+private:
+    size_t _gateV;
 };
 
 class AIGGate:public CirGate
