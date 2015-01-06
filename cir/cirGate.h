@@ -114,6 +114,12 @@ public:
     bool operator < (const CirGateV& rhs) const
     {return this->gate()->_varId < rhs.gate()->_varId;}
     void inverse() {_gateV ^= NEG;}
+    string getInvStr()const{
+        if(this->isInv())
+            return "!";
+        else
+            return "";
+    }
 private:
     size_t _gateV;
 };

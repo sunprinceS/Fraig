@@ -29,8 +29,8 @@ using namespace std;
 /**************************************************/
 void
 CirMgr::sweep()
-{ 
-     if(_bDFSd){
+{  
+      if(_bDFSd){
         IdList removeId;
         for(size_t i=0;i<_totalList.size();++i){
             if(_totalList[i] != NULL){
@@ -58,7 +58,7 @@ CirMgr::sweep()
 
 void
 CirMgr::optimize()
-{
+{ 
     if(_bSimd == false && _bDFSd == true)
     {
         _bDFSd = false;
@@ -114,14 +114,16 @@ CirMgr::removeFromFanin(const unsigned int gid,vector<CirGateV>& fanin)
 
 void
 CirMgr::singleOutputSimplify(unsigned int gid)
-{
+{ 
     assert(_totalList[gid]->getType() == AIG_GATE);
 
     CirGateV replaceGateV(_totalList[0],0);
-    if(_totalList[gid]->_faninList[0].getId() != 0)
+    if(_totalList[gid]->_faninList[0].getId() != 0){
         replaceGateV = _totalList[gid]->_faninList[0];
-    else
+    }
+    else{
         replaceGateV = _totalList[gid]->_faninList[1];
+    }
         
     reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);
     removeFromFanin(gid,_totalList[gid]->_faninList);
@@ -133,7 +135,7 @@ CirMgr::zeroOutputSimplify(unsigned int gid)
     assert(_totalList[gid]->getType() == AIG_GATE);
 
     CirGateV replaceGateV(_totalList[0],0);
-        
+     
     reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);
     removeFromFanin(gid,_totalList[gid]->_faninList);
 }
@@ -165,7 +167,7 @@ CirMgr::checkOutput(const unsigned int gid)const
     short who = -1;
     if(_totalList[gid]->_faninList[0].getId() == 0)
         who = 0;
-    else if(_totalList[gid]->_faninList[1].getId() == 1)
+    else if(_totalList[gid]->_faninList[1].getId() == 0)
         who = 1;
     else; //no CONST fanin
 
@@ -197,22 +199,28 @@ CirMgr::reconnectFanout(const CirGateV replaceGateV,const unsigned int gid,
 {
     assert(_totalList[gid]->getType() == AIG_GATE);
 
+    bool first = true;
     if(fanout.empty())
         return ;
     for(size_t i=0;i<fanout.size();++i){
-        if(fanout[i].gate()->_bTraced){
-            for(size_t j=0;j<fanout[i].gate()->_faninList.size();++j){
-               if(fanout[i].gate()->_faninList[j].getId() == gid){
-                    bool invOrNot = fanout[i].gate()->_faninList[j].isInv();
-                    fanout[i].gate()->_faninList[j] = replaceGateV;
+        for(size_t j=0;j<fanout[i].gate()->_faninList.size();++j){
+            if(fanout[i].gate()->_faninList[j].getId() == gid){
+                bool invOrNot = fanout[i].gate()->_faninList[j].isInv();
+                fanout[i].gate()->_faninList[j] = replaceGateV;
 
-                    //connect fanin to the fanout
-                    if(invOrNot)
-                        fanout[i].gate()->_faninList[j].inverse();
-                    //connect fanout to the fanin
-                    _totalList[gid]->_faninList.push_back(CirGateV(fanout[i].gate(),fanout[i].gate()->_faninList[j].isInv()));
-               } 
-            }
+                if(first){
+                    cout <<"Simplifying: " << replaceGateV.getId()
+                        << " merging "<<fanout[i].gate()->
+                        _faninList[j].getInvStr()<< gid << "..."<< endl;
+                    first = false;
+                }
+
+                //connect fanin to the fanout
+                if(invOrNot)
+                    fanout[i].gate()->_faninList[j].inverse();
+                //connect fanout to the fanin
+                _totalList[replaceGateV.getId()]->_fanoutList.push_back(fanout[i]);
+            } 
         }
     }
 }

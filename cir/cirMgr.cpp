@@ -269,7 +269,7 @@ CirMgr::printFloatGates() const
         {
             if(_totalList[i]->hasFloatingFanin()){
                 if(floatFirst){
-                    cout << "Gates with floating fanin(s):";
+                    cout << "\nGates with floating fanin(s):";
                     floatFirst = false;
                 }
                 cout << " " <<  i;
