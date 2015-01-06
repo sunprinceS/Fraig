@@ -34,4 +34,12 @@ enum GateType
    TOT_GATE
 };
 
+enum GateOutput
+{
+    ZERO_OUTPUT   =  0,
+    SINGLE_OUTPUT =  1,
+    NORMAL_OUTPUT =  2,
+
+    TOT_OUTPUT
+};
 #endif // CIR_DEF_H

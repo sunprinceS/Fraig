@@ -30,7 +30,7 @@ class CirGateV;
 //   Define classes
 //------------------------------------------------------------------------
 class CirGate
-{ 
+{  
     friend CirMgr;
     friend CirGateV; 
 public:
@@ -52,7 +52,7 @@ public:
    //property related
    void setTracedOrNot(bool traced) {_bTraced = traced;}
    bool isTraced()const {return _bTraced;}
-   bool isUsed()const {
+    bool isUsed()const {
        return (getType()==PO_GATE) || !(_fanoutList.empty());}
    bool hasFloatingFanin()const;
 
@@ -107,11 +107,13 @@ public:
     #define NEG 0x1
     CirGateV(const CirGate* gate,size_t phase):
         _gateV((size_t)gate + phase){}
+    //CirGateV(const CirGateV& gateV):_gateV(gateV._gateV){}
     CirGate* gate() const {return (CirGate*)(_gateV & ~size_t(NEG));}
     bool isInv() const {return (_gateV & NEG);}
+    size_t getId()const{return this->gate()->_varId;}
     bool operator < (const CirGateV& rhs) const
     {return this->gate()->_varId < rhs.gate()->_varId;}
-
+    void inverse() {_gateV ^= NEG;}
 private:
     size_t _gateV;
 };
