@@ -139,14 +139,14 @@ private:
     bool genDfsList();
 
     //optimization related
-    void removeFromFanin (const unsigned int gid,vector<CirGateV>& fanin);
-    void removeFromFanout(const unsigned int gid,vector<CirGateV>& fanout);
+    void removeFromFanin (const unsigned int& gid,vector<CirGateV>& fanin);
+    void removeFromFanout(const unsigned int& gid,vector<CirGateV>& fanout);
    
-    void singleOutputSimplify(unsigned int gid);
-    void zeroOutputSimplify(unsigned int gid);
-    GateOutput checkOutput(const unsigned int gid)const;
-    void reconnectFanout(const CirGateV replaveGateV,const unsigned int gid,
-                         vector<CirGateV>& fanout);
+    void singleOutputSimplify(const unsigned int& gid);
+    void zeroOutputSimplify(const unsigned int& gid);
+    void merge(const CirGateV&,const unsigned int&,string why = "");
+    GateOutput checkOutput(const unsigned int& gid)const;
+    void reconnectFanout(const CirGateV&,const unsigned int&,vector<CirGateV>&);
     //tool 
     void traversalReset();
     CirGate* findGate(unsigned int gid);

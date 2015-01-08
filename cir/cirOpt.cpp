@@ -94,7 +94,7 @@ CirMgr::optimize()
 
 //Only AIG_GATE can use this function
 void
-CirMgr::removeFromFanin(const unsigned int gid,vector<CirGateV>& fanin)
+CirMgr::removeFromFanin(const unsigned int& gid,vector<CirGateV>& fanin)
 {
     assert(_totalList[gid]->getType() == AIG_GATE);
     
@@ -113,35 +113,7 @@ CirMgr::removeFromFanin(const unsigned int gid,vector<CirGateV>& fanin)
 }
 
 void
-CirMgr::singleOutputSimplify(unsigned int gid)
-{ 
-    assert(_totalList[gid]->getType() == AIG_GATE);
-
-    CirGateV replaceGateV(_totalList[0],0);
-    if(_totalList[gid]->_faninList[0].getId() != 0){
-        replaceGateV = _totalList[gid]->_faninList[0];
-    }
-    else{
-        replaceGateV = _totalList[gid]->_faninList[1];
-    }
-        
-    reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);
-    removeFromFanin(gid,_totalList[gid]->_faninList);
-}
-
-void
-CirMgr::zeroOutputSimplify(unsigned int gid)
-{
-    assert(_totalList[gid]->getType() == AIG_GATE);
-
-    CirGateV replaceGateV(_totalList[0],0);
-     
-    reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);
-    removeFromFanin(gid,_totalList[gid]->_faninList);
-}
-
-void
-CirMgr::removeFromFanout(const unsigned int gid,vector<CirGateV>& fanout)
+CirMgr::removeFromFanout(const unsigned int& gid,vector<CirGateV>& fanout)
 {
     assert(_totalList[gid]->getType() == AIG_GATE);
 
@@ -159,8 +131,45 @@ CirMgr::removeFromFanout(const unsigned int gid,vector<CirGateV>& fanout)
     return ;
 }
 
+void
+CirMgr::zeroOutputSimplify(const unsigned int& gid)
+{
+    assert(_totalList[gid]->getType() == AIG_GATE);
+
+    CirGateV replaceGateV(_totalList[0],0);
+     
+    merge(replaceGateV,gid,"Simplifying: "); 
+
+}
+void
+CirMgr::singleOutputSimplify(const unsigned int& gid)
+{ 
+    assert(_totalList[gid]->getType() == AIG_GATE);
+
+    CirGateV replaceGateV(_totalList[0],0);
+    if(_totalList[gid]->_faninList[0].getId() != 0){
+        replaceGateV = _totalList[gid]->_faninList[0];
+    }
+    else{
+        replaceGateV = _totalList[gid]->_faninList[1];
+    }
+
+    merge(replaceGateV,gid,"Simplifying: "); 
+}
+
+void
+CirMgr::merge(const CirGateV& replaceGateV,const unsigned int& gid,string why)
+{
+    cout << why << replaceGateV.getId()
+         << " merging "<<replaceGateV.getInvStr()<< gid << "..."<< endl;
+    reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);
+    removeFromFanin(gid,_totalList[gid]->_faninList);
+}
+
+
+
 GateOutput
-CirMgr::checkOutput(const unsigned int gid)const
+CirMgr::checkOutput(const unsigned int& gid)const
 {
     assert(_totalList[gid]->getType() == AIG_GATE);
 
@@ -194,12 +203,12 @@ CirMgr::checkOutput(const unsigned int gid)const
 }
 
 void
-CirMgr::reconnectFanout(const CirGateV replaceGateV,const unsigned int gid,
+CirMgr::reconnectFanout(const CirGateV& replaceGateV,const unsigned int& gid,
         vector<CirGateV>& fanout)
 {
     assert(_totalList[gid]->getType() == AIG_GATE);
 
-    bool first = true;
+    //bool first = true;
     if(fanout.empty())
         return ;
     for(size_t i=0;i<fanout.size();++i){
@@ -207,13 +216,6 @@ CirMgr::reconnectFanout(const CirGateV replaceGateV,const unsigned int gid,
             if(fanout[i].gate()->_faninList[j].getId() == gid){
                 bool invOrNot = fanout[i].gate()->_faninList[j].isInv();
                 fanout[i].gate()->_faninList[j] = replaceGateV;
-
-                if(first){
-                    cout <<"Simplifying: " << replaceGateV.getId()
-                        << " merging "<<fanout[i].gate()->
-                        _faninList[j].getInvStr()<< gid << "..."<< endl;
-                    first = false;
-                }
 
                 //connect fanin to the fanout
                 if(invOrNot)

@@ -26,6 +26,7 @@ using namespace std;
 
 class CirGate;
 class CirGateV;
+class FanKey;
 //------------------------------------------------------------------------
 //   Define classes
 //------------------------------------------------------------------------
@@ -33,6 +34,7 @@ class CirGate
 {  
     friend CirMgr;
     friend CirGateV; 
+    friend FanKey;
 public:
    CirGate(unsigned int id,unsigned int l=0,bool bTraced = false):
             _varId(id),_lineNo(l),_colNo(0),_symbol(""),
@@ -110,10 +112,17 @@ public:
     //CirGateV(const CirGateV& gateV):_gateV(gateV._gateV){}
     CirGate* gate() const {return (CirGate*)(_gateV & ~size_t(NEG));}
     bool isInv() const {return (_gateV & NEG);}
+    int getInvId(){
+        if(isInv())
+            return getId()*-1;
+        else
+            return getId();
+        ;}
     size_t getId()const{return this->gate()->_varId;}
     bool operator < (const CirGateV& rhs) const
     {return this->gate()->_varId < rhs.gate()->_varId;}
     void inverse() {_gateV ^= NEG;}
+    size_t getHashV()const {return (getId()+isInv()?1:0);}
     string getInvStr()const{
         if(this->isInv())
             return "!";
