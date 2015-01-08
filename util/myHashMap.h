@@ -166,7 +166,22 @@ class HashMap
         return false;
     }
 
-
+void print()
+   {
+       size_t ctr = 0;
+       cout << "Print begin" << endl;
+       for(size_t i=0;i<_numBuckets;++i){
+           if(_buckets[i].empty())
+               ++ctr;
+           else{
+           cout<< endl <<"[" << i << "] :";
+           for (size_t j = 0;j<_buckets[i].size();++j) {
+               cout << _buckets[i][j]->_data.second << "  ";
+           }
+           }
+       }
+       cout << "empty bucket num " <<ctr << endl; 
+   }
 
     // return true if inserted successfully (i.e. d is not in the hash)
     // return false is d is already in the hash ==> will not insert

@@ -96,7 +96,7 @@ CirMgr::optimize()
 void
 CirMgr::removeFromFanin(const unsigned int& gid,vector<CirGateV>& fanin)
 {
-    assert(_totalList[gid]->getType() == AIG_GATE);
+    //assert(_totalList[gid]->getType() == AIG_GATE);
     
     if(fanin.empty())
         return ;
@@ -115,7 +115,7 @@ CirMgr::removeFromFanin(const unsigned int& gid,vector<CirGateV>& fanin)
 void
 CirMgr::removeFromFanout(const unsigned int& gid,vector<CirGateV>& fanout)
 {
-    assert(_totalList[gid]->getType() == AIG_GATE);
+    //assert(_totalList[gid]->getType() == AIG_GATE);
 
     if(fanout.empty())
         return ;
@@ -164,6 +164,7 @@ CirMgr::merge(const CirGateV& replaceGateV,const unsigned int& gid,string why)
          << " merging "<<replaceGateV.getInvStr()<< gid << "..."<< endl;
     reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);
     removeFromFanin(gid,_totalList[gid]->_faninList);
+    --_A;
 }
 
 

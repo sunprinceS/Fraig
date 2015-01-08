@@ -80,13 +80,13 @@ CirMgr::strash()
             }
         }
     }
+    //gateHash->print();
     _bStrashed = true;
     for (size_t i = 0;i<removeId.size();++i) {
         delete _totalList[removeId[i]];
         _totalList[removeId[i]] = NULL;
     }
     genDfsList();
-    
 }
 
 void
