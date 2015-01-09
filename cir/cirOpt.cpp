@@ -96,16 +96,13 @@ CirMgr::optimize()
 void
 CirMgr::removeFromFanin(const unsigned int& gid,vector<CirGateV>& fanin)
 {
-    //assert(_totalList[gid]->getType() == AIG_GATE);
     
     if(fanin.empty())
         return ;
     for (size_t i = 0;i<fanin.size();++i) {
-        if(fanin[i].gate()->_bTraced){
-            for (size_t j = 0;j<fanin[i].gate()->_fanoutList.size();++j) {
-                if(fanin[i].gate()->_fanoutList[j].gate()->_varId == gid){
-                    fanin[i].gate()-> _fanoutList.erase(fanin[i].gate()->_fanoutList.begin()+j);
-                }
+        for (size_t j = 0;j<fanin[i].gate()->_fanoutList.size();++j) {
+            if(fanin[i].gate()->_fanoutList[j].gate()->_varId == gid){
+                fanin[i].gate()-> _fanoutList.erase(fanin[i].gate()->_fanoutList.begin()+j);
             }
         }
     }
@@ -120,11 +117,9 @@ CirMgr::removeFromFanout(const unsigned int& gid,vector<CirGateV>& fanout)
     if(fanout.empty())
         return ;
     for (size_t i = 0;i<fanout.size();++i) {
-        if(fanout[i].gate()->_bTraced){
-            for (size_t j = 0;j<fanout[i].gate()->_faninList.size();++j) {
-                if(fanout[i].gate()->_faninList[j].gate()->_varId == gid){
-                    fanout[i].gate()-> _faninList.erase(fanout[i].gate()->_faninList.begin()+j);
-                }
+        for (size_t j = 0;j<fanout[i].gate()->_faninList.size();++j) {
+            if(fanout[i].gate()->_faninList[j].gate()->_varId == gid){
+                fanout[i].gate()-> _faninList.erase(fanout[i].gate()->_faninList.begin()+j);
             }
         }
     }

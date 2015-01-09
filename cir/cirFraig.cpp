@@ -31,31 +31,32 @@ class FanKey
 public:
     FanKey(CirGate* gate)
     {
-        //assert(gate->getType() == AIG_GATE);
+        assert(gate->getType() == AIG_GATE);
 
-        if(gate->_faninList[0].getId() > gate->_faninList[1].getId())
+        if(gate->_faninList[0].getGateV() > gate->_faninList[1].getGateV())
         {
-            input1 = gate->_faninList[0].getInvId();
-            input2 = gate->_faninList[1].getInvId();
+            input1 = gate->_faninList[0].getGateV();
+            input2 = gate->_faninList[1].getGateV();
         }
         else
         {
-            input1 = gate->_faninList[1].getInvId();
-            input2 = gate->_faninList[0].getInvId();
+            input1 = gate->_faninList[1].getGateV();
+            input2 = gate->_faninList[0].getGateV();
         }
     }
     FanKey()
     {}
     unsigned int operator() () const
     {
-        unsigned int key = (size_t(input2) << 16) + size_t(input1);
+        //unsigned int key = (size_t(input2) << 16) + size_t(input1);
+        unsigned int key = input1 + input2;
         return key;
     }
     bool operator == (const FanKey& k) const 
     { return ((input1 == k.input1)&&(input2 == k.input2));}
 private:
-     int input1;
-     int input2;
+     size_t input1;
+     size_t input2;
 };
 /*******************************************/
 /*   Public member functions about fraig   */
