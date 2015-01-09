@@ -49,7 +49,7 @@ public:
     unsigned int operator() () const
     {
         //unsigned int key = (size_t(input2) << 16) + size_t(input1);
-        unsigned int key = input1 + input2;
+        unsigned int key = input1 + (input2 << 5);
         return key;
     }
     bool operator == (const FanKey& k) const 
