@@ -33,7 +33,7 @@ class SimValue
 public:
     SimValue(size_t sim)
     {
-        if((sim&0x1) ==0)
+        if((sim &0x1) == 0)
             _sim = sim;
         else
             _sim = ~sim;
@@ -43,7 +43,8 @@ public:
     unsigned int operator() () const{
         return _sim;}
     bool operator == (const SimValue& k) const {
-        return (_sim == k._sim);}
+        //return ((_sim == k._sim) || (_sim == ~(k._sim)));}
+        return (_sim == k._sim) ;}
 private:
      size_t _sim;
 };
@@ -80,6 +81,7 @@ CirMgr::fileSim(ifstream& patternFile)
     size_t numSim=0;
 
     string curLine;
+    initSim();
     while(getline(patternFile,curLine)){
 
         //check length
@@ -107,7 +109,6 @@ CirMgr::fileSim(ifstream& patternFile)
             }
         }
         ++numSim;
-        initSim();
 
         if(numSim%32 == 0){
             simulation();
@@ -116,6 +117,12 @@ CirMgr::fileSim(ifstream& patternFile)
             }
         }
 
+    }
+    if(numSim%32 != 0){
+        simulation();
+        for(size_t i=0;i<_I;++i){
+            _simValues[i] = 0;
+        }
     }
     cout << numSim << " patterns simulated." << endl;
 }
@@ -174,7 +181,6 @@ CirMgr::simulation(){
         for(size_t j=0;j<oldFecGrps[i]->size();++j)
         {
             FecGrp group = NULL;
-            //size_t sims = (*(oldFecGrps[i]))[j];
             size_t sim = _totalList[(*(oldFecGrps[i]))[j]]->_simValue;
             SimValue simVal(sim);
             

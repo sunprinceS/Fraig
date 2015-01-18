@@ -302,6 +302,15 @@ CirMgr::printFloatGates() const
 void
 CirMgr::printFECPairs() const
 { 
+    for(size_t i=0;i<_fecGrps.size();++i)
+    {
+        cout << "[" << i << "] ";
+        for(size_t j=0;j<_fecGrps[i]->size();++j)
+        {
+            cout << (*_fecGrps[i])[j] << " ";
+        }
+        cout << endl;
+    }
 }
 
 void

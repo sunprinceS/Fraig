@@ -38,6 +38,23 @@ CirGate::reportGate() const
     data << ", line " << _lineNo;
     cout << setw(49) << left << data.str() << right << "=" << endl;
     
+    ostringstream fecs;
+    fecs << "= FECs: ";
+    if(_fecGrp != NULL)
+    {
+        for(size_t i=0;i<_fecGrp->size();++i)
+            fecs << (*_fecGrp)[i] << " ";
+    }
+    cout << setw(49) << left << fecs.str() << right << "=" << endl;
+
+    cout << "= Value: ";
+    for(size_t i=1;i<=32;++i)
+    {
+        cout << ((_simValue & (0x1 << (32-i)))?'1':'0');
+        if(i%4 == 0 && i!=32) {cout <<'_';}
+    }
+    cout << " =" << endl;
+
     cout << "==================================================" << endl;
     
 }

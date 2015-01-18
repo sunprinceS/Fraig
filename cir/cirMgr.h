@@ -38,7 +38,6 @@ enum formatType {
     DUMMYFORMAT
 };
 
-
 class CirMgr
 { 
 public:
