@@ -42,8 +42,13 @@ CirGate::reportGate() const
     fecs << "= FECs: ";
     if(_fecGrp != NULL)
     {
-        for(size_t i=0;i<_fecGrp->size();++i)
-            fecs << (*_fecGrp)[i] << " ";
+        for(size_t i=0;i<_fecGrp->size();++i){
+            if((cirMgr->_totalList[(*_fecGrp)[i]]->isInvSignal())
+                !=(this->isInvSignal())){
+                fecs << '!';}
+            if((*_fecGrp)[i]!=this->_varId)
+                fecs << (*_fecGrp)[i] << " ";
+        }
     }
     cout << setw(49) << left << fecs.str() << right << "=" << endl;
 

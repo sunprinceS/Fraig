@@ -33,17 +33,17 @@ class SimValue
 public:
     SimValue(size_t sim)
     {
-        if((sim &0x1) == 0)
+        //if((sim &0x1) == 0)
             _sim = sim;
-        else
-            _sim = ~sim;
+        //else
+            //_sim = ~sim;
     }
     SimValue()
     {}
     unsigned int operator() () const{
         return _sim;}
+    SimValue inverse(){return ~_sim;}
     bool operator == (const SimValue& k) const {
-        //return ((_sim == k._sim) || (_sim == ~(k._sim)));}
         return (_sim == k._sim) ;}
 private:
      size_t _sim;
@@ -55,7 +55,7 @@ void
 CirMgr::randomSim()
 { 
     _simValues.resize(_I,0);
-    size_t maxFail = (size_t)(sqrt(_A + _I))*2 + 3;
+    size_t maxFail = (size_t)(log10(_A + _I))*2 + 3;
     size_t fails = 0;
     size_t cycles = 0;
     
@@ -175,6 +175,7 @@ CirMgr::simulation(){
     _fecGrps.swap(oldFecGrps);
 
     //we've assumed that the _fecGrps have been initialized
+    //partition begin
     for(size_t i=0;i<oldFecGrps.size();++i)
     {
         HashMap<SimValue,FecGrp> newFecGrps(getHashSize(oldFecGrps[i]->size()));
@@ -183,10 +184,16 @@ CirMgr::simulation(){
             FecGrp group = NULL;
             size_t sim = _totalList[(*(oldFecGrps[i]))[j]]->_simValue;
             SimValue simVal(sim);
-            
+
             if(newFecGrps.check(simVal,group))
             {
                 group->push_back((*(oldFecGrps[i]))[j]);
+                _totalList[(*oldFecGrps[i])[j]]->setInvSignal(false);
+            }
+            else if(newFecGrps.check(simVal.inverse(),group))
+            {
+                group->push_back((*(oldFecGrps[i]))[j]);
+                _totalList[(*oldFecGrps[i])[j]]->setInvSignal(true);
             }
             else{
                 group = new IdList;

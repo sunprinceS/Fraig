@@ -71,6 +71,8 @@ public:
     
    //simulation related
    void setSimValue(const size_t simValue){_simValue = simValue;}
+   void setInvSignal(bool inv){_invSignal = inv;}
+   bool isInvSignal()const {return _invSignal;}
 
    //traversal methods
    bool isGlobalRef()const{return _ref == _globalRef;}
@@ -92,6 +94,7 @@ protected:
     //for simulate
     FecGrp _fecGrp;
     size_t _simValue;
+    bool _invSignal;
 
     //for traversal
     mutable size_t _ref;

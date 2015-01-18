@@ -40,6 +40,7 @@ enum formatType {
 
 class CirMgr
 { 
+    friend CirGate;
 public:
    CirMgr():_gateDeclareLineNo(2),
     _bDFSd(false),_bStrashed(false),_bSimd(false){};
