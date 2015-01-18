@@ -23,7 +23,7 @@ class SatSolver;
 /***TypeDef and Enum***/
 typedef vector<CirGate*>           GateList;
 typedef vector<unsigned>           IdList;
-typedef IdList*              FecGrp;
+typedef unsigned int*              FecGrp;
 enum GateType
 { 
    UNDEF_GATE = 0,

@@ -38,7 +38,7 @@ class CirGate
 public:
    CirGate(unsigned int id,unsigned int l=0,bool bTraced = false):
             _varId(id),_lineNo(l),_colNo(0),_symbol(""),
-            _bTraced(bTraced),_ref(_globalRef){};
+            _bTraced(bTraced),_fecGrp(0),_simValue(0),_ref(_globalRef){};
    
    virtual ~CirGate() {};
 
@@ -48,8 +48,8 @@ public:
    unsigned getLineNo() const { return _lineNo; }
    virtual unsigned int getIdIndex() const=0;
 
-   void setFecGrpNum(size_t num) {_fecGrpNum = num;}
-   size_t getFecGrpNum()const {return _fecGrpNum;}
+   //void setFecGrpNum(size_t num) {_fecGrpNum = num;}
+   //size_t getFecGrpNum()const {return _fecGrpNum;}
    
    //property related
    void setTracedOrNot(bool traced) {_bTraced = traced;}
@@ -68,6 +68,9 @@ public:
    void reportGate() const;
    void reportFanin(int level);
    void reportFanout(int level);
+    
+   //simulation related
+   void setSimValue(const size_t simValue){_simValue = simValue;}
 
    //traversal methods
    bool isGlobalRef()const{return _ref == _globalRef;}
@@ -87,8 +90,9 @@ protected:
     bool _bTraced;
 
     //for simulate
-    size_t _fecGrpNum;
-    
+    FecGrp _fecGrp;
+    size_t _simValue;
+
     //for traversal
     mutable size_t _ref;
     static size_t _globalRef;
@@ -129,6 +133,12 @@ public:
         else
             return "";
     }
+    size_t getSimValue()const{
+        size_t ret = gate()->_simValue;
+        if(this->isInv())
+            ret = ~ret;
+        return ret;
+    }
 private:
     size_t _gateV;
 };
@@ -151,6 +161,7 @@ class PIGate:public CirGate
 public:
     PIGate(unsigned int id,unsigned int l=0):CirGate(id,l){};
     ~PIGate(){};
+
 
    virtual string getTypeStr()const {return "PI";};
    virtual GateType getType()const{ return PI_GATE;}
@@ -176,6 +187,7 @@ public:
     ConstGate():CirGate(0){_bTraced = true;};
     ~ConstGate(){};
     
+   
    virtual string getTypeStr() const{return "CONST";};
    virtual GateType getType()const{ return CONST_GATE;}
    virtual unsigned int getIdIndex()const{return -1;}//error

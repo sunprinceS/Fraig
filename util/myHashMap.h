@@ -155,7 +155,7 @@ class HashMap
     // check if d is in the hash...
     // if yes, return true;
     // else return false;
-    bool check(const HashKey& key,size_t& matchId) const { 
+    bool check(const HashKey& key,HashData& matchId) const { 
         size_t bkNum = bucketNum(key); 
         for (size_t i = 0;i<_buckets[bkNum].size();++i) {
             if(key == _buckets[bkNum][i]->_data.first){

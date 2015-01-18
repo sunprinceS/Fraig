@@ -376,7 +376,7 @@ CirMgr::parseInput(istream& file)
     _PIIds.resize(_I);
 
     for(size_t i=0;i<_I;++i)
-    {
+    { 
         unsigned int tmpId;
         unsigned int varId;
         file >> tmpId;

@@ -38,6 +38,7 @@ enum formatType {
     DUMMYFORMAT
 };
 
+
 class CirMgr
 { 
 public:
@@ -56,6 +57,7 @@ public:
            delete _POs[i];
            _POs[i] = NULL;
        }
+
    }
 
    // Access functions
@@ -101,6 +103,7 @@ private:
     GateList _totalList;//total gates of PI and AND
     GateList _dfsList;//active gates
 
+
     //input
     IdList _PIIds;//literal id
 
@@ -117,7 +120,9 @@ private:
     
     //simulation
     ofstream           *_simLog;
-    
+    vector<unsigned int> _simValues;
+    vector<FecGrp> _fecGrps; 
+
     //flags
     bool _bDFSd;
     bool _bStrashed;
@@ -147,6 +152,12 @@ private:
     void merge(const CirGateV&,const unsigned int&,string why = "");
     GateOutput checkOutput(const unsigned int& gid)const;
     void reconnectFanout(const CirGateV&,const unsigned int&,vector<CirGateV>&);
+
+    //simulation related
+    void initSim();
+    bool simulation();
+    size_t gateSim(CirGate* curGate);
+    
     //tool 
     void traversalReset();
     CirGate* findGate(unsigned int gid);

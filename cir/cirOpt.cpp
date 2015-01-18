@@ -42,8 +42,6 @@ CirMgr::sweep()
                     cout << "Sweeping: " << _totalList[i]->getTypeStr() 
                          << "(" <<_totalList[i]->_varId<< ") removed..." <<endl;
 
-                    //delete _totalList[i];
-                    //_totalList[i] = NULL;
                     removeId.push_back(i);
                 }
             }
@@ -204,7 +202,6 @@ CirMgr::reconnectFanout(const CirGateV& replaceGateV,const unsigned int& gid,
 {
     assert(_totalList[gid]->getType() == AIG_GATE);
 
-    //bool first = true;
     if(fanout.empty())
         return ;
     for(size_t i=0;i<fanout.size();++i){
