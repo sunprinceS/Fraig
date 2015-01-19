@@ -59,7 +59,10 @@ CirMgr::randomSim()
     size_t fails = 0;
     size_t cycles = 0;
     
-    initSim();
+    if(this->_bSimd == false){
+        _bSimd = true;
+        initSim();}
+
     while(fails < maxFail){
         for(size_t i=0;i<_simValues.size();++i){
             _simValues[i] = rnGen(INT_MAX);}
@@ -81,42 +84,50 @@ CirMgr::fileSim(ifstream& patternFile)
     size_t numSim=0;
 
     string curLine;
-    initSim();
+    vector<string> sequence; 
+    if(this->_bSimd == false){
+        _bSimd = true;
+        initSim();}
+
     while(getline(patternFile,curLine)){
 
-        //check length
-        if(curLine.length()!=_I){
-            cerr << "\nError: Pattern(" << curLine 
-                <<  ") length(" << curLine.length()
-                << ") does not match the number of inputs("
-                << _I << ") in a circuit!!" << endl;
-            break;
-        }
+        splitStr(curLine,&sequence);        
+        for(size_t i=0;i<sequence.size();++i)
+        {
+            //check length
+            if(sequence[i].length()!=_I){
+                cerr << "\nError: Pattern(" << sequence[i] 
+                    <<  ") length(" << sequence[i].length()
+                    << ") does not match the number of inputs("
+                    << _I << ") in a circuit!!" << endl;
+                break;
+            }
 
-        //check format
-        size_t errPoint = curLine.find_first_not_of("01");
-        if(errPoint != string::npos){
-            cerr << "Error: Pattern(" << curLine << ")"
-                << "contains a non-0/1 character(\'" 
-                << curLine[errPoint] << "\')." << endl;
-            break;
-        }
+            //check format
+            size_t errPoint = sequence[i].find_first_not_of("01");
+            if(errPoint != string::npos){
+                cerr << "Error: Pattern(" << sequence[i] << ")"
+                    << "contains a non-0/1 character(\'" 
+                    << sequence[i][errPoint] << "\')." << endl;
+                break;
+            }
 
-        //setup simvalue
-        for(size_t i=0;i<_I;++i){
-            if(curLine[i] == '1'){
-                _simValues[i] += (1<<(numSim%32));
+            //setup simvalue
+            for(size_t j=0;j<_I;++j){
+                if(sequence[i][j] == '1'){
+                    _simValues[j] += (1<<(numSim%32));
+                }
+            }
+            ++numSim;
+
+            if(numSim%32 == 0){
+                simulation();
+                for(size_t i=0;i<_I;++i){
+                    _simValues[i] = 0;
+                }
             }
         }
-        ++numSim;
-
-        if(numSim%32 == 0){
-            simulation();
-            for(size_t i=0;i<_I;++i){
-                _simValues[i] = 0;
-            }
-        }
-
+        sequence.clear();
     }
     if(numSim%32 != 0){
         simulation();
@@ -131,6 +142,20 @@ CirMgr::fileSim(ifstream& patternFile)
 /*************************************************/
 /*   Private member functions about Simulation   */
 /*************************************************/
+
+void 
+CirMgr::splitStr(string& line,vector<string>* seq)
+{
+    size_t pos = line.find_first_not_of(" ");
+    size_t seqEnd;
+    while(pos != string::npos)
+    {
+        seqEnd = line.find_first_of(" ",pos);
+        seq->push_back(line.substr(pos,seqEnd-pos));
+        pos = line.find_first_not_of(" ",seqEnd);
+    }
+    return ;
+}
 void 
 CirMgr::initSim(){
 
@@ -141,10 +166,10 @@ CirMgr::initSim(){
       firstGrp->reserve(_tracedAndGateIds.size()+1);
 
 
+      firstGrp->push_back(0); //push const 0 gate
       for(size_t i = 0;i < _dfsList.size();++i)
       {
-         if(_dfsList[i]->getType() == AIG_GATE || 
-            _dfsList[i] ->getType() == CONST_GATE)
+         if(_dfsList[i]->getType() == AIG_GATE)
          {
             {
                firstGrp->push_back(_dfsList[i]->_varId);
@@ -167,6 +192,7 @@ CirMgr::simulation(){
     {
         if(_dfsList[i]->getType()!= PI_GATE && 
            _dfsList[i]->getType()!=CONST_GATE){
+
            _dfsList[i]->setSimValue(gateSim(_dfsList[i]));
         }
     }
@@ -198,6 +224,7 @@ CirMgr::simulation(){
             else{
                 group = new IdList;
                 group->push_back((*(oldFecGrps[i]))[j]);
+                _totalList[(*oldFecGrps[i])[j]]->setInvSignal(false);
                 newFecGrps.insert(make_pair(simVal,group));
             }
             _totalList[(*(oldFecGrps[i]))[j]]->_fecGrp = group;
@@ -220,6 +247,7 @@ CirMgr::simulation(){
         delete oldFecGrps[i];
         oldFecGrps[i] = NULL;
     }
+    cout << "Total #FEC Group = " << _fecGrps.size() << endl;
     return !(oldFecGrps.size() == _fecGrps.size());
 }
 

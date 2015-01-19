@@ -304,12 +304,13 @@ CirMgr::printFECPairs() const
 { 
     for(size_t i=0;i<_fecGrps.size();++i)
     {
-        cout << "[" << i << "] ";
+        cout << "[" << i << "]";
         for(size_t j=0;j<_fecGrps[i]->size();++j)
         {
+            cout << " ";
             if(_totalList[(*_fecGrps[i])[j]]->isInvSignal())
                 cout << '!';
-            cout << (*_fecGrps[i])[j] << " ";
+            cout << (*_fecGrps[i])[j];
         }
         cout << endl;
     }
