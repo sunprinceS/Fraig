@@ -55,7 +55,12 @@ void
 CirMgr::randomSim()
 { 
     _simValues.resize(_I,0);
+
+    /******MAGIC FUNCTION********/
     size_t maxFail = (size_t)(log10(_A + _I))*2 + 3;
+    /****************************/
+    cout << "MAX_FAILS = " << maxFail << endl;
+    
     size_t fails = 0;
     size_t cycles = 0;
     
@@ -71,6 +76,9 @@ CirMgr::randomSim()
             fails = 0;
         else
             ++fails;
+        
+        if(_simLog != NULL)
+            recordSim(32); 
         
         ++cycles;
     }
@@ -106,7 +114,7 @@ CirMgr::fileSim(ifstream& patternFile)
             //check format
             size_t errPoint = sequence[i].find_first_not_of("01");
             if(errPoint != string::npos){
-                cerr << "Error: Pattern(" << sequence[i] << ")"
+                cerr << "\nError: Pattern(" << sequence[i] << ")"
                     << "contains a non-0/1 character(\'" 
                     << sequence[i][errPoint] << "\')." << endl;
                 break;
@@ -122,8 +130,11 @@ CirMgr::fileSim(ifstream& patternFile)
 
             if(numSim%32 == 0){
                 simulation();
-                for(size_t i=0;i<_I;++i){
-                    _simValues[i] = 0;
+                if(_simLog != NULL)
+                    recordSim(32);
+
+                for(size_t j=0;j<_I;++j){
+                    _simValues[j] = 0;
                 }
             }
         }
@@ -131,6 +142,10 @@ CirMgr::fileSim(ifstream& patternFile)
     }
     if(numSim%32 != 0){
         simulation();
+
+        if(_simLog != NULL)
+            recordSim(numSim%32);
+
         for(size_t i=0;i<_I;++i){
             _simValues[i] = 0;
         }
@@ -269,3 +284,26 @@ CirMgr::gateSim(CirGate* curGate){
     return ret;
 }
 
+void
+CirMgr::recordSim(size_t simNum)
+{
+    for(size_t i=0;i<simNum;++i)
+    {
+        for(size_t j=0;j<_I;++j){
+            if((_totalList[_PIIds[j]/2]->_simValue&(0x1<<i)))
+                *_simLog << '1';
+            else
+                *_simLog << '0';
+        }
+
+        *_simLog << " ";
+
+        for(size_t j=0;j<_O;++j)
+            if((_POs[j] ->_simValue&(0x1<<i)))
+                *_simLog << '1';
+            else
+                *_simLog << '0';
+
+        *_simLog << endl;
+    }
+}

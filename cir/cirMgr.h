@@ -158,6 +158,7 @@ private:
     bool simulation();
     size_t gateSim(CirGate* curGate);
     void splitStr(string& line,vector<string>* seq); 
+    void recordSim(size_t numSim);
     //tool 
     void traversalReset();
     CirGate* findGate(unsigned int gid);
