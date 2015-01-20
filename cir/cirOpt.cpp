@@ -35,7 +35,7 @@ CirMgr::sweep()
         for(size_t i=0;i<_totalList.size();++i){
             if(_totalList[i] != NULL){
                 if(!(_totalList[i]->_bTraced) && 
-                     _totalList[i]->getType()==AIG_GATE){
+                     (_totalList[i]->getType()==AIG_GATE || _totalList[i]->getType() == UNDEF_GATE)){
 
                     removeFromFanin (i,_totalList[i]->_faninList );
                     removeFromFanout(i,_totalList[i]->_fanoutList);
