@@ -136,7 +136,7 @@ CirMgr::zeroOutputSimplify(const unsigned int& gid)
 }
 void
 CirMgr::singleOutputSimplify(const unsigned int& gid)
-{ 
+{  
     assert(_totalList[gid]->getType() == AIG_GATE);
 
     CirGateV replaceGateV(_totalList[0],0);
@@ -152,7 +152,7 @@ CirMgr::singleOutputSimplify(const unsigned int& gid)
 
 void
 CirMgr::merge(const CirGateV& replaceGateV,const unsigned int& gid,string why)
-{
+{ 
     cout << why << replaceGateV.getId()
          << " merging "<<replaceGateV.getInvStr()<< gid << "..."<< endl;
     reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);

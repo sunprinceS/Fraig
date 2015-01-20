@@ -42,7 +42,7 @@ class CirMgr
 { 
     friend CirGate;
 public:
-   CirMgr():_gateDeclareLineNo(2),
+   CirMgr():_gateDeclareLineNo(2),_solver(NULL),
     _bDFSd(false),_bStrashed(false),_bSimd(false){};
    ~CirMgr()
    {
@@ -57,7 +57,8 @@ public:
            delete _POs[i];
            _POs[i] = NULL;
        }
-
+       if(_solver != NULL)
+           delete _solver;
    }
 
    // Access functions
@@ -122,6 +123,9 @@ private:
     ofstream           *_simLog;
     vector<unsigned int> _simValues;
     vector<FecGrp> _fecGrps; 
+    
+    //fraig
+    SatSolver* _solver;
 
     //flags
     bool _bDFSd;
@@ -159,6 +163,11 @@ private:
     size_t gateSim(CirGate* curGate);
     void splitStr(string& line,vector<string>* seq); 
     void recordSim(size_t numSim);
+
+    //fraig related
+    void initSat();
+    bool solveSat(size_t gid1,size_t gid2,bool inv);
+
     //tool 
     void traversalReset();
     CirGate* findGate(unsigned int gid);

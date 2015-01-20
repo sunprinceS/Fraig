@@ -54,7 +54,7 @@ public:
    //property related
    void setTracedOrNot(bool traced) {_bTraced = traced;}
    bool isTraced()const {return _bTraced;}
-    bool isUsed()const {
+     bool isUsed()const {
        return (getType()==PO_GATE) || !(_fanoutList.empty());}
    bool hasFloatingFanin()const;
 
@@ -78,6 +78,9 @@ public:
    bool isGlobalRef()const{return _ref == _globalRef;}
    static void setGlobalRef(){++(_globalRef);}
    void setToGlobalRef()const {_ref = _globalRef;}
+    
+   //fraig related
+   void setVar(Var var){_satVar = var;}
 
    //other
    void sortFan();
@@ -95,6 +98,9 @@ protected:
     FecGrp _fecGrp;
     size_t _simValue;
     bool _invSignal;
+    
+    //for fraig
+    Var _satVar;
 
     //for traversal
     mutable size_t _ref;

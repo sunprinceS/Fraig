@@ -183,7 +183,7 @@ CirMgr::initSim(){
 
       firstGrp->push_back(0); //push const 0 gate
       for(size_t i = 0;i < _dfsList.size();++i)
-      {
+      { 
          if(_dfsList[i]->getType() == AIG_GATE)
          {
             {
@@ -198,7 +198,7 @@ CirMgr::initSim(){
 bool 
 CirMgr::simulation(){
 
-    for(size_t i=0;i<_I;++i){
+    for(size_t i=0;i<_I;++ i){
         _totalList[_PIIds[i]/2]->setSimValue(_simValues[i]);
     }
     
@@ -295,15 +295,14 @@ CirMgr::recordSim(size_t simNum)
             else
                 *_simLog << '0';
         }
-
         *_simLog << " ";
 
-        for(size_t j=0;j<_O;++j)
+        for(size_t j=0;j<_O;++j){
             if((_POs[j] ->_simValue&(0x1<<i)))
                 *_simLog << '1';
             else
                 *_simLog << '0';
-
+        }
         *_simLog << endl;
     }
 }
