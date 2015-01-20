@@ -57,6 +57,7 @@ public:
            delete _POs[i];
            _POs[i] = NULL;
        }
+       resetFecGrps();
        if(_solver != NULL)
            delete _solver;
            _solver = NULL;

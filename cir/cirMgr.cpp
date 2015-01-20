@@ -601,6 +601,10 @@ CirMgr::findGate(unsigned int gid)//used in connection
 void
 CirMgr::traversalReset()
 {
+    for(size_t i=0;i<_dfsList.size();++i)
+    {
+        _dfsList[i]->_bTraced = false;
+    }
     _dfsList.clear();
     _tracedAndGateIds.clear();
     CirGate::setGlobalRef();

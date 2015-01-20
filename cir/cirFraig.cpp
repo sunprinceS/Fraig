@@ -96,6 +96,7 @@ CirMgr::fraig()
     if(_solver == NULL){
         initSat();
     }
+    IdList removeId;
     for(size_t i=0;i<_fecGrps.size();++i)
     {
         for(size_t j=0;j<(*_fecGrps[i]).size();++j)
@@ -113,12 +114,17 @@ CirMgr::fraig()
                         {
                             merge(CirGateV(_totalList[(*_fecGrps[i])[j]],inv),
                                     (*_fecGrps[i])[k],"FRAIG: ");
+                            removeId.push_back(_totalList[(*_fecGrps[i])[k]] ->_varId);
                             (*_fecGrps[i])[k] = -1;
                         }
                     }
                 }
             }
         }
+    }
+    for (size_t i = 0;i<removeId.size();++i) {
+        delete _totalList[removeId[i]];
+        _totalList[removeId[i]] = NULL;
     }
     resetFecGrps();
     genDfsList();
@@ -183,18 +189,19 @@ CirMgr::solveSat(size_t gid1,size_t gid2,bool inv)
 void
 CirMgr::resetFecGrps()
 {
+    vector<FecGrp> lala;
     for(size_t i=0;i<_fecGrps.size();++i)
     {
         for(size_t j=0;j<_fecGrps[i]->size();++j)
         {
             if((*_fecGrps[i])[j] != -1) //haven't been merged
-                _totalList[(*_fecGrps[i])[j]] -> _fecGrp = NULL;
+                _totalList[(*_fecGrps[i])[j]]->_fecGrp = NULL;
         }
         delete _fecGrps[i];
         _fecGrps[i] = NULL;
     }
     _bSimd = false;
-    _fecGrps.clear();
+    _fecGrps.swap(lala);
     cout << "Cleaning... Total #FEC Group = 0" << endl;
 }
 
