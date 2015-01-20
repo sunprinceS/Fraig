@@ -195,7 +195,10 @@ CirMgr::resetFecGrps()
         for(size_t j=0;j<_fecGrps[i]->size();++j)
         {
             if((*_fecGrps[i])[j] != -1) //haven't been merged
-                _totalList[(*_fecGrps[i])[j]]->_fecGrp = NULL;
+            {
+                if(_totalList[(*_fecGrps[i])[j]] != NULL)
+                    _totalList[(*_fecGrps[i])[j]]->_fecGrp = NULL;
+            }
         }
         delete _fecGrps[i];
         _fecGrps[i] = NULL;
