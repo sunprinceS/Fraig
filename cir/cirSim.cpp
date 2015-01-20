@@ -262,7 +262,7 @@ CirMgr::simulation(){
         delete oldFecGrps[i];
         oldFecGrps[i] = NULL;
     }
-    cout << "Total #FEC Group = " << _fecGrps.size() << endl;
+    cout << "Total #FEC Group = " << _fecGrps.size() << '\r';
     return !(oldFecGrps.size() == _fecGrps.size());
 }
 

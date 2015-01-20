@@ -100,27 +100,29 @@ CirMgr::fraig()
     {
         for(size_t j=0;j<(*_fecGrps[i]).size();++j)
         {
-            if((*_fecGrps[i])[j]!=-1)
-            {
+            if((*_fecGrps[i])[j]!=-1){
                 for(size_t k=j+1;k<(*_fecGrps[i]).size();++k)
                 {
-                    bool inv = (_totalList[(*_fecGrps[i])[j]]->isInvSignal() != 
-                                _totalList[(*_fecGrps[i])[k]]->isInvSignal());
-                    if(solveSat((*_fecGrps[i])[j],(*_fecGrps[i])[k],inv))//not eq
-                    {
-                        continue;
-                    }
-                    else //eq
-                    {
-                        merge(CirGateV(_totalList[(*_fecGrps[i])[j]],inv),
-                                (*_fecGrps[i])[k],"FRAIG");
-                        (*_fecGrps[i])[k] = -1;
+                    if((*_fecGrps[i])[k]!=-1){
+                        bool inv=(_totalList[(*_fecGrps[i])[j]]->isInvSignal()                                  !=_totalList[(*_fecGrps[i])[k]]->isInvSignal());
+                        if(solveSat((*_fecGrps[i])[j],(*_fecGrps[i])[k],inv))
+                        {
+                            continue;
+                        }
+                        else //eq
+                        {
+                            merge(CirGateV(_totalList[(*_fecGrps[i])[j]],inv),
+                                    (*_fecGrps[i])[k],"FRAIG: ");
+                            (*_fecGrps[i])[k] = -1;
+                        }
                     }
                 }
             }
         }
     }
+    resetFecGrps();
     genDfsList();
+    strash();
 }
 
 /********************************************/
@@ -174,6 +176,25 @@ CirMgr::solveSat(size_t gid1,size_t gid2,bool inv)
       _solver->assumeProperty(f, true);
     }
     bool result = _solver->assumpSolve();
+    cout << (result?"SAT":"UNSAT") << '\r';
     return result;
 
 }
+void
+CirMgr::resetFecGrps()
+{
+    for(size_t i=0;i<_fecGrps.size();++i)
+    {
+        for(size_t j=0;j<_fecGrps[i]->size();++j)
+        {
+            if((*_fecGrps[i])[j] != -1) //haven't been merged
+                _totalList[(*_fecGrps[i])[j]] -> _fecGrp = NULL;
+        }
+        delete _fecGrps[i];
+        _fecGrps[i] = NULL;
+    }
+    _bSimd = false;
+    _fecGrps.clear();
+    cout << "Cleaning... Total #FEC Group = 0" << endl;
+}
+

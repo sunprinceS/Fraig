@@ -59,6 +59,7 @@ public:
        }
        if(_solver != NULL)
            delete _solver;
+           _solver = NULL;
    }
 
    // Access functions
@@ -167,6 +168,7 @@ private:
     //fraig related
     void initSat();
     bool solveSat(size_t gid1,size_t gid2,bool inv);
+    void resetFecGrps();
 
     //tool 
     void traversalReset();
