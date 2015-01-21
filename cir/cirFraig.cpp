@@ -174,7 +174,7 @@ CirMgr::solveSat(size_t gid1,size_t gid2,bool inv)
     else
     {
         cout << "\nProving (" << gid1 << ","
-             << (inv?"!":"") << gid2 << ")...";
+             << (inv?"!":"") << gid2 << ")...\r";
 
       Var f = _solver->newVar();
       _solver->addXorCNF(f,_totalList[gid1]->_satVar,false, 
@@ -205,6 +205,6 @@ CirMgr::resetFecGrps()
     }
     _bSimd = false;
     _fecGrps.swap(lala);
-    cout << "Cleaning... Total #FEC Group = 0" << endl;
+    cout << "Cleaning... Total #FEC Group = 0 \r" << endl;
 }
 

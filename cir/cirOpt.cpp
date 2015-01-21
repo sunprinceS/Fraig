@@ -40,7 +40,7 @@ CirMgr::sweep()
                     removeFromFanin (i,_totalList[i]->_faninList );
                     removeFromFanout(i,_totalList[i]->_fanoutList);
                     cout << "Sweeping: " << _totalList[i]->getTypeStr() 
-                         << "(" <<_totalList[i]->_varId<< ") removed..." <<endl;
+                         << "(" <<_totalList[i]->_varId<< ") removed..."  << '\r';
 
                     removeId.push_back(i);
                 }
@@ -154,7 +154,7 @@ void
 CirMgr::merge(const CirGateV& replaceGateV,const unsigned int& gid,string why)
 { 
     cout << why << replaceGateV.getId()
-         << " merging "<<replaceGateV.getInvStr()<< gid << "..."<< endl;
+         << " merging "<<replaceGateV.getInvStr()<< gid << "...\r";
     reconnectFanout(replaceGateV,gid,_totalList[gid]->_fanoutList);
     removeFromFanin(gid,_totalList[gid]->_faninList);
     --_A;

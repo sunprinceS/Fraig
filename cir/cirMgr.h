@@ -58,9 +58,9 @@ public:
            _POs[i] = NULL;
        }
        resetFecGrps();
-       if(_solver != NULL)
+       if(_solver != NULL){
            delete _solver;
-           _solver = NULL;
+           _solver = NULL;}
    }
 
    // Access functions
